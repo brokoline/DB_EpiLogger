@@ -27,6 +27,9 @@
             android:name=".HistoryActivity"
             android:exported="true" />
 
+        <activity
+            android:name=".MessageActivity"
+            android:exported="true" />
 
         <activity
             android:name=".MainActivity"
