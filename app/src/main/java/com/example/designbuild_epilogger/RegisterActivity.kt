@@ -1,5 +1,6 @@
 package com.example.designbuild_epilogger
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
+import com.example.designbuild_epilogger.R
 
 
 class RegisterActivity : ComponentActivity() {
@@ -37,6 +40,14 @@ class RegisterActivity : ComponentActivity() {
 @Composable
 fun RegisterActivityScreen() {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
+    val context = LocalContext.current // Get the current context
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
+    var confirmPasswordError by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -62,13 +73,12 @@ fun RegisterActivityScreen() {
             modifier = Modifier.padding(bottom = 30.dp)
         )
 
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var confirmPassword by remember { mutableStateOf("") }
-
         BasicTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                emailError = false
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 16.dp)
@@ -85,10 +95,20 @@ fun RegisterActivityScreen() {
                 innerTextField()
             }
         )
+        if (emailError) {
+            Text(
+                text = "Please enter a valid email",
+                color = Color.Red,
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
+            )
+        }
 
         BasicTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                passwordError = false
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 16.dp)
@@ -106,10 +126,20 @@ fun RegisterActivityScreen() {
                 innerTextField()
             }
         )
+        if (passwordError) {
+            Text(
+                text = "Please enter a valid password",
+                color = Color.Red,
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
+            )
+        }
 
         BasicTextField(
             value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            onValueChange = {
+                confirmPassword = it
+                confirmPasswordError = false
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 16.dp)
@@ -127,9 +157,33 @@ fun RegisterActivityScreen() {
                 innerTextField()
             }
         )
+        if (confirmPasswordError) {
+            Text(
+                text = "Passwords do not match",
+                color = Color.Red,
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
+            )
+        }
 
         Button(
-            onClick = { /* Handle register */ },
+            onClick = {
+                var isValid = true
+                if (email.isEmpty()) {
+                    emailError = true
+                    isValid = false
+                }
+                if (password.isEmpty()) {
+                    passwordError = true
+                    isValid = false
+                }
+                if (confirmPassword.isEmpty() || confirmPassword != password) {
+                    confirmPasswordError = true
+                    isValid = false
+                }
+                if (isValid) {
+                    // Handle register
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 16.dp),
@@ -150,7 +204,10 @@ fun RegisterActivityScreen() {
             fontFamily = customFont,
             modifier = Modifier
                 .padding(top = 30.dp)
-                .clickable { /* Handle back to login */ }
+                .clickable {
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)
+                }
         )
     }
 }

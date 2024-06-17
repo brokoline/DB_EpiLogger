@@ -1,4 +1,3 @@
-// main
 package com.example.designbuild_epilogger
 
 import android.content.Intent
@@ -42,6 +41,10 @@ fun MainActivityScreen() {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current // adding this line to get the context
 
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var loginError by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,10 +69,12 @@ fun MainActivityScreen() {
             modifier = Modifier.padding(bottom = 30.dp)
         )
 
-        var email by remember { mutableStateOf("") }
         BasicTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                loginError = false
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 16.dp)
@@ -87,10 +92,12 @@ fun MainActivityScreen() {
             }
         )
 
-        var password by remember { mutableStateOf("") }
         BasicTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                loginError = false
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 16.dp)
@@ -109,8 +116,23 @@ fun MainActivityScreen() {
             }
         )
 
+        if (loginError) {
+            Text(
+                text = "Invalid username or password",
+                color = Color.Red,
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
+            )
+        }
+
         Button(
-            onClick = { /* Handle login */ },
+            onClick = {
+                if (email == "test" && password == "test") {
+                    val intent = Intent(context, DashboardActivity::class.java)
+                    context.startActivity(intent)
+                } else {
+                    loginError = true
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 40.dp),
