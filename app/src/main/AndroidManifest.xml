@@ -23,6 +23,10 @@
             android:name=".UploadActivity"
             android:exported="true" />
 
+        <activity
+            android:name=".HistoryActivity"
+            android:exported="true" />
+
 
         <activity
             android:name=".MainActivity"

@@ -82,7 +82,10 @@ fun DashboardActivityScreen() {
         }
 
         Button(
-            onClick = { /* Handle history */ },
+            onClick = {
+                val intent = Intent(context, HistoryActivity::class.java)
+                context.startActivity(intent)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 8.dp),
