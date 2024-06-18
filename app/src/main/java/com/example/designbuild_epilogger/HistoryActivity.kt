@@ -147,7 +147,7 @@ fun HistoryActivityScreen() {
 
         Text(
             text = "Back to Dashboard",
-            fontSize = 35.sp,
+            fontSize = 27.sp,
             color = Color(0xFF2b4a84),
             fontFamily = customFont,
             modifier = Modifier

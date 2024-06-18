@@ -59,30 +59,27 @@ fun MessageActivityScreen() {
 
         Text(
             text = "Send a message",
-            fontSize = 44.sp,
+            fontSize = 39.sp,
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
-            modifier = Modifier.padding(bottom = 30.dp)
+            modifier = Modifier
+                .padding(bottom = 20.dp)
         )
 
-        BasicTextField(
+        OutlinedTextField(
             value = message,
             onValueChange = { message = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
-                .background(Color.LightGray)
-                .padding(12.dp),
+                .height(170.dp)
+                .padding(horizontal = 32.dp, vertical = 16.dp),
             textStyle = TextStyle(
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Normal
             ),
-            decorationBox = { innerTextField ->
-                if (message.isEmpty()) {
-                    Text("Write your message here...", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
-                }
-                innerTextField()
-            }
+            label = { Text("Write your message here...", fontWeight = FontWeight.Bold, fontSize = 20.sp)  },
+            maxLines = 6,
+            singleLine = false
         )
 
         Button(
@@ -102,11 +99,11 @@ fun MessageActivityScreen() {
 
         Text(
             text = "Back to Dashboard",
-            fontSize = 35.sp,
+            fontSize = 27.sp,
             color = Color(0xFF2b4a84),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(top = 30.dp)
+                .padding(top = 40.dp)
                 .clickable {
                     val intent = Intent(context, DashboardActivity::class.java)
                     context.startActivity(intent)

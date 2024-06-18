@@ -1,6 +1,5 @@
 package com.example.designbuild_epilogger
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,7 +10,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
-import com.example.designbuild_epilogger.R
 
 class UploadActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,24 +74,20 @@ fun UploadActivityScreen() {
                 .padding(bottom = 20.dp)
         )
 
-        BasicTextField(
+        OutlinedTextField(
             value = description,
             onValueChange = { description = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
-                .background(Color.LightGray)
-                .padding(10.dp),
+                .height(170.dp)
+                .padding(horizontal = 22.dp, vertical = 6.dp),
             textStyle = TextStyle(
-                fontSize = 18.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Normal
             ),
-            decorationBox = { innerTextField ->
-                if (description.isEmpty()) {
-                    Text("Describe symptoms or the area of concern, including details such as duration, any changes in condition, and other relevant information.")
-                }
-                innerTextField()
-            }
+            label = { Text("Describe symptoms or the area of concern, including details such as duration, any changes in condition, and other relevant information.", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+            maxLines = 20,
+            singleLine = false
         )
 
         Button(
@@ -123,8 +116,8 @@ fun UploadActivityScreen() {
 
         Button(
             onClick = {
-                // Handle upload picture functionality
-                // You can use the selectedImageUri and description to upload the image
+                // handle upload picture functionality
+                //  use the selectedImageUri and description to upload the image
             },
             modifier = Modifier
                 .fillMaxWidth()
