@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
 import com.example.designbuild_epilogger.R
 
-
 class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +38,7 @@ class RegisterActivity : ComponentActivity() {
 @Composable
 fun RegisterActivityScreen() {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
-    val context = LocalContext.current // Get the current context
+    val context = LocalContext.current
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -53,7 +51,7 @@ fun RegisterActivityScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top = 15.dp),
+            .padding(top = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -73,7 +71,7 @@ fun RegisterActivityScreen() {
             modifier = Modifier.padding(bottom = 30.dp)
         )
 
-        BasicTextField(
+        OutlinedTextField(
             value = email,
             onValueChange = {
                 email = it
@@ -81,19 +79,13 @@ fun RegisterActivityScreen() {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
-                .background(Color.LightGray)
-                .padding(12.dp),
+                .padding(horizontal = 32.dp, vertical = 4.dp),
             textStyle = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             ),
-            decorationBox = { innerTextField ->
-                if (email.isEmpty()) {
-                    Text("Email", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
-                }
-                innerTextField()
-            }
+            label = { Text("Email", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+            singleLine = true
         )
         if (emailError) {
             Text(
@@ -103,7 +95,7 @@ fun RegisterActivityScreen() {
             )
         }
 
-        BasicTextField(
+        OutlinedTextField(
             value = password,
             onValueChange = {
                 password = it
@@ -111,20 +103,14 @@ fun RegisterActivityScreen() {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
-                .background(Color.LightGray)
-                .padding(12.dp),
+                .padding(horizontal = 32.dp, vertical = 4.dp),
             visualTransformation = PasswordVisualTransformation(),
             textStyle = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             ),
-            decorationBox = { innerTextField ->
-                if (password.isEmpty()) {
-                    Text("Password", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
-                }
-                innerTextField()
-            }
+            label = { Text("Password", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+            singleLine = true
         )
         if (passwordError) {
             Text(
@@ -134,7 +120,7 @@ fun RegisterActivityScreen() {
             )
         }
 
-        BasicTextField(
+        OutlinedTextField(
             value = confirmPassword,
             onValueChange = {
                 confirmPassword = it
@@ -142,20 +128,14 @@ fun RegisterActivityScreen() {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
-                .background(Color.LightGray)
-                .padding(12.dp),
+                .padding(horizontal = 32.dp, vertical = 4.dp),
             visualTransformation = PasswordVisualTransformation(),
             textStyle = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             ),
-            decorationBox = { innerTextField ->
-                if (confirmPassword.isEmpty()) {
-                    Text("Confirm Password", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
-                }
-                innerTextField()
-            }
+            label = { Text("Confirm Password", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+            singleLine = true
         )
         if (confirmPasswordError) {
             Text(

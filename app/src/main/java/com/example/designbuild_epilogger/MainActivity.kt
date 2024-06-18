@@ -69,7 +69,7 @@ fun MainActivityScreen() {
             modifier = Modifier.padding(bottom = 30.dp)
         )
 
-        BasicTextField(
+        OutlinedTextField(
             value = email,
             onValueChange = {
                 email = it
@@ -77,22 +77,16 @@ fun MainActivityScreen() {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
-                .background(Color.LightGray)
-                .padding(12.dp),
+                .padding(horizontal = 32.dp, vertical = 6.dp),
             textStyle = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             ),
-            decorationBox = { innerTextField ->
-                if (email.isEmpty()) {
-                    Text("E-mail", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
-                }
-                innerTextField()
-            }
+            label = { Text("E-mail", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+            singleLine = true
         )
 
-        BasicTextField(
+        OutlinedTextField(
             value = password,
             onValueChange = {
                 password = it
@@ -100,20 +94,14 @@ fun MainActivityScreen() {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
-                .background(Color.LightGray)
-                .padding(12.dp),
+                .padding(horizontal = 32.dp, vertical = 6.dp),
             visualTransformation = PasswordVisualTransformation(),
             textStyle = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             ),
-            decorationBox = { innerTextField ->
-                if (password.isEmpty()) {
-                    Text("Password", style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold))
-                }
-                innerTextField()
-            }
+            label = { Text("Password", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+            singleLine = true
         )
 
         if (loginError) {
