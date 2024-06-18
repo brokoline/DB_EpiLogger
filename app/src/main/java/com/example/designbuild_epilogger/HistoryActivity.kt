@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
-import com.example.designbuild_epilogger.R
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -109,7 +108,7 @@ fun HistoryActivityScreen() {
         // Start date picker
         Text(
             text = "Start Date: $startDate",
-            fontSize = 20.sp,
+            fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier
@@ -120,7 +119,7 @@ fun HistoryActivityScreen() {
         // End date picker
         Text(
             text = "End Date: $endDate",
-            fontSize = 20.sp,
+            fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier

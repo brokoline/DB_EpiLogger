@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.Font
@@ -51,8 +54,9 @@ fun DashboardActivityScreen() {
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(bottom = 50.dp)
+                .padding(bottom = 20.dp)
         )
+
 
         Text(
             text = "EpiOverview",
@@ -124,7 +128,11 @@ fun DashboardActivityScreen() {
             fontFamily = customFont,
             modifier = Modifier
                 .padding(top = 16.dp)
-                .clickable { /* Handle log out */ }
+                .clickable {
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)
+                    (context as? ComponentActivity)?.finish()
+                }
         )
     }
 }
