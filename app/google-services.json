@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "116844459847",
+    "firebase_url": "https://epiexplorer-7698c-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "epiexplorer-7698c",
+    "storage_bucket": "epiexplorer-7698c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116844459847:android:295ff7bcefbe957d38be62",
+        "android_client_info": {
+          "package_name": "com.example.designbuild_epilogger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbK42NYY4o0C-5VbwinOBkL7cidaCtNeQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116844459847:android:3c03c94e43f011db38be62",
+        "android_client_info": {
+          "package_name": "com.example.designbuildproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbK42NYY4o0C-5VbwinOBkL7cidaCtNeQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116844459847:android:494499d9d38593a038be62",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbK42NYY4o0C-5VbwinOBkL7cidaCtNeQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

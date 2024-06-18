@@ -1,7 +1,10 @@
 package com.example.designbuild_epilogger
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -24,23 +27,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
 import com.example.designbuild_epilogger.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         setContent {
             YourProjectTheme {
-                MainActivityScreen()
+                MainActivityScreen(auth)  { navigateToDashboard() }
             }
         }
+    }
+    private fun navigateToDashboard() {
+        startActivity(Intent(this, DashboardActivity::class.java))
     }
 }
 
 @Composable
-fun MainActivityScreen() {
+fun MainActivityScreen(auth: FirebaseAuth, onLoginSuccess: () -> Unit) {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
-    val context = LocalContext.current // adding this line to get the context
-
+    val context = LocalContext.current
+    val lifecycleScope = rememberCoroutineScope()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginError by remember { mutableStateOf(false) }
@@ -114,12 +126,26 @@ fun MainActivityScreen() {
 
         Button(
             onClick = {
-                if (email == "test" && password == "test") {
-                    val intent = Intent(context, DashboardActivity::class.java)
-                    context.startActivity(intent)
+                if (email.isNotEmpty() && password.isNotEmpty()) {
+                    lifecycleScope.launch {
+                        auth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Log.d(ContentValues.TAG, "signInWithEmail:success")
+                                    onLoginSuccess()
+                                } else {
+                                    Toast.makeText(context, "Incorrect username or password", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                    }
                 } else {
                     loginError = true
                 }
+
+
+                    val intent = Intent(context, DashboardActivity::class.java)
+                    context.startActivity(intent)
+
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -149,10 +175,6 @@ fun MainActivityScreen() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewMainActivityScreen() {
-    YourProjectTheme {
-        MainActivityScreen()
-    }
-}
+
+
+

@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
 import com.example.designbuild_epilogger.R
+import com.google.firebase.auth.FirebaseAuth
 
 class DashboardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +38,7 @@ class DashboardActivity : ComponentActivity() {
 fun DashboardActivityScreen() {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
+    val auth = FirebaseAuth.getInstance()
 
     Column(
         modifier = Modifier
@@ -101,6 +103,7 @@ fun DashboardActivityScreen() {
 
         Button(
             onClick = {
+
                 val intent = Intent(context, MessageActivity::class.java)
                 context.startActivity(intent)
             },
@@ -118,13 +121,16 @@ fun DashboardActivityScreen() {
         }
 
         Text(
+
             text = "Log out",
             fontSize = 30.sp,
             color = Color(0xFF2b4a84),
             fontFamily = customFont,
             modifier = Modifier
                 .padding(top = 16.dp)
-                .clickable { /* Handle log out */ }
+                .clickable { auth.signOut()
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)}
         )
     }
 }

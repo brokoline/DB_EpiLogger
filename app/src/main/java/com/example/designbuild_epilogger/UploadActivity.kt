@@ -3,6 +3,8 @@ package com.example.designbuild_epilogger
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,25 +25,50 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.net.toUri
+import coil.compose.rememberImagePainter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.text.SimpleDateFormat
+import java.util.*
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
 
 class UploadActivity : ComponentActivity() {
+    class UploadData(val comment: String = "",
+                     val date: String = "",
+                     val storagePath: String = "",
+                     val downloadUrl: String = "") {
+
+    }
+
+    private lateinit var auth: FirebaseAuth
+    private var firebaseRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("comment")
     override fun onCreate(savedInstanceState: Bundle?) {
+        auth = Firebase.auth
         super.onCreate(savedInstanceState)
         setContent {
             YourProjectTheme {
-                UploadActivityScreen()
+                UploadActivityScreen(auth)
             }
         }
     }
 }
 
 @Composable
-fun UploadActivityScreen() {
+fun UploadActivityScreen(auth: FirebaseAuth) {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
+    val currentUser = auth.currentUser
     var description by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    //var imageUri by remember { mutableStateOf<Uri?>(null) }
+    /*val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
+        imageUri = uri */
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -116,8 +143,11 @@ fun UploadActivityScreen() {
 
         Button(
             onClick = {
-                // handle upload picture functionality
-                //  use the selectedImageUri and description to upload the image
+                if (selectedImageUri != null) {
+                    uploadImage(auth, selectedImageUri!!, description, context)
+                }else {
+                    Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -145,12 +175,55 @@ fun UploadActivityScreen() {
                 }
         )
     }
+
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewUploadActivityScreen() {
-    YourProjectTheme {
-        UploadActivityScreen()
+private fun uploadImage(auth: FirebaseAuth, selectedImageUri: Uri, description: String, context: android.content.Context) {
+    val currentUser = auth.currentUser
+    currentUser?.let { user ->
+        val uid = user.uid
+        val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+        val currentDate = dateFormat.format(Date())
+        val dateTimeFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+        val currentDateTime = dateTimeFormat.format(Date())
+        val fileName = "$currentDateTime.jpg"
+        val storagePath = "user/$uid/images/$fileName"
+        val storageReference: StorageReference = FirebaseStorage.getInstance().getReference(storagePath)
+
+        storageReference.putFile(selectedImageUri)
+            .addOnSuccessListener {
+                storageReference.downloadUrl.addOnSuccessListener { uri ->
+                    val databaseReference = FirebaseDatabase.getInstance().getReference("users/$uid/uploads")
+                    val uploadId = databaseReference.push().key
+
+                    val uploadData = UploadActivity.UploadData(
+                        description,
+                        currentDate,
+                        storagePath,
+                        uri.toString()
+                    )
+
+                    uploadId?.let {
+                        databaseReference.child(it).setValue(uploadData)
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "Image and comment uploaded successfully", Toast.LENGTH_SHORT).show()
+                                val intent = Intent(context, DashboardActivity::class.java)
+                                context.startActivity(intent)
+                            }
+                            .addOnFailureListener { exception ->
+                                Toast.makeText(context, "Failed to upload comment: ${exception.message}", Toast.LENGTH_SHORT).show()
+                                Log.e("UploadError", "Failed to upload comment", exception)
+                            }
+                    } ?: run {
+                        Toast.makeText(context, "Failed to generate database reference", Toast.LENGTH_SHORT).show()
+                    }
+                }.addOnFailureListener { exception ->
+                    Toast.makeText(context, "Failed to get download URL: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    Log.e("UploadError", "Failed to get download URL", exception)
+                }
+            }.addOnFailureListener { exception ->
+                Toast.makeText(context, "Image upload failed: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Log.e("UploadError", "Image upload failed", exception)
+            }
     }
 }
