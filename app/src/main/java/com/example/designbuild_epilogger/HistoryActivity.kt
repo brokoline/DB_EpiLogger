@@ -2,31 +2,34 @@ package com.example.designbuild_epilogger
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
 import com.example.designbuild_epilogger.R
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class HistoryActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -37,20 +40,27 @@ class HistoryActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatLocalDateTime(localDateTime: LocalDateTime): String {
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yy")
+    return localDateTime.format(formatter)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HistoryActivityScreen() {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
-    var startDate by remember { mutableStateOf("") }
-    var endDate by remember { mutableStateOf("") }
+
+    var startDate by remember { mutableStateOf(formatLocalDateTime(LocalDateTime.now())) }
+    var endDate by remember { mutableStateOf(formatLocalDateTime(LocalDateTime.now())) }
 
     val calendar = Calendar.getInstance()
 
     val startDatePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-            startDate = "$dayOfMonth/${month + 1}/$year"
+            startDate = String.format("%02d-%02d-%02d", dayOfMonth, month + 1, year % 100)
         },
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH),
@@ -60,7 +70,7 @@ fun HistoryActivityScreen() {
     val endDatePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-            endDate = "$dayOfMonth/${month + 1}/$year"
+            endDate = String.format("%02d-%02d-%02d", dayOfMonth, month + 1, year % 100)
         },
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH),
@@ -96,46 +106,35 @@ fun HistoryActivityScreen() {
             fontFamily = customFont
         )
 
-        OutlinedTextField(
-            value = startDate,
-            onValueChange = { startDate = it },
+        // Start date picker
+        Text(
+            text = "Start Date: $startDate",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
-                .clickable { startDatePickerDialog.show() },
-            readOnly = true,
-            label = { Text("Start Date", fontFamily = customFont, fontSize = 20.sp, fontWeight = FontWeight.Bold) },
-            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color.Transparent,
-                focusedBorderColor = Color(0xFF1e3e7e),
-                unfocusedBorderColor = Color(0xFF1e3e7e)
-            )
+                .padding(16.dp)
+                .clickable { startDatePickerDialog.show() }
         )
 
-        OutlinedTextField(
-            value = endDate,
-            onValueChange = { endDate = it },
+        // End date picker
+        Text(
+            text = "End Date: $endDate",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp)
-                .clickable { endDatePickerDialog.show() },
-            readOnly = true,
-            label = { Text("End Date", fontFamily = customFont, fontSize = 20.sp, fontWeight = FontWeight.Bold) },
-            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color.Transparent,
-                focusedBorderColor = Color(0xFF1e3e7e),
-                unfocusedBorderColor = Color(0xFF1e3e7e)
-            )
+                .padding(16.dp)
+                .clickable { endDatePickerDialog.show() }
         )
 
         Button(
-            onClick = { /* Handle fetch logs */ },
+            onClick = {
+                // Handle date selection and fetch logs
+            },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1e3e7e))
+                .padding(horizontal = 32.dp, vertical = 16.dp)
         ) {
             Text(
                 text = "Fetch Logs",
@@ -160,6 +159,7 @@ fun HistoryActivityScreen() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewHistoryActivityScreen() {
