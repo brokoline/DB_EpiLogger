@@ -84,7 +84,7 @@ fun HistoryActivityScreen( databaseReference: DatabaseReference) {
         DatePickerDialog(
             context,
             { _, year, month, dayOfMonth ->
-                startDate = String.format(java.util.Locale.ENGLISH,"%02d-%02d-%02d", dayOfMonth, month + 1, year % 100)
+                startDate = String.format(Locale.ENGLISH,"%02d-%02d-%02d", dayOfMonth, month + 1, year % 100)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -96,7 +96,7 @@ fun HistoryActivityScreen( databaseReference: DatabaseReference) {
         DatePickerDialog(
             context,
             { _, year, month, dayOfMonth ->
-                endDate = String.format(java.util.Locale.ENGLISH,"%02d-%02d-%02d", dayOfMonth, month + 1, year % 100)
+                endDate = String.format(Locale.ENGLISH,"%02d-%02d-%02d", dayOfMonth, month + 1, year % 100)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
