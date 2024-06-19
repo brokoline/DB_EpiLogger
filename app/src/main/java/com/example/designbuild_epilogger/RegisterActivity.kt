@@ -84,7 +84,7 @@ fun RegisterActivityScreen() {
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             ),
-            label = { Text("Email", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+            label = { Text("E-mail", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
             singleLine = true
         )
         if (emailError) {

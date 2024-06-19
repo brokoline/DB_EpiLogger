@@ -7,39 +7,35 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
 import com.example.designbuild_epilogger.R
 
-class MessageActivity : ComponentActivity() {
+class PrescriptionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             YourProjectTheme {
-                MessageActivityScreen()
+                PrescriptionActivityScreen()
             }
         }
     }
 }
 
 @Composable
-fun MessageActivityScreen() {
+fun PrescriptionActivityScreen() {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
-    var message by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -54,11 +50,11 @@ fun MessageActivityScreen() {
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(bottom = 50.dp)
+                .padding(bottom = 20.dp)
         )
 
         Text(
-            text = "Send a message",
+            text = "Prescriptions",
             fontSize = 39.sp,
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
@@ -66,45 +62,14 @@ fun MessageActivityScreen() {
                 .padding(bottom = 20.dp)
         )
 
+
         Text(
-            text = "The m",
+            text = "Your prescriptions will be displayed here.",
             fontSize = 20.sp,
-            color = Color(0xFF1e3e7e),
-            fontFamily = customFont,
-            modifier = Modifier
-                .padding(top = 0.dp)
-        )
+            color = Color.Black,
+            modifier = Modifier.padding(16.dp),
 
-        OutlinedTextField(
-            value = message,
-            onValueChange = { message = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(170.dp)
-                .padding(horizontal = 32.dp, vertical = 16.dp),
-            textStyle = TextStyle(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Normal
-            ),
-            label = { Text("Write your message here...", fontWeight = FontWeight.Bold, fontSize = 20.sp)  },
-            maxLines = 6,
-            singleLine = false
         )
-
-        Button(
-            onClick = { /* Handle send message */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1e3e7e))
-        ) {
-            Text(
-                text = "Send message",
-                fontSize = 29.sp,
-                color = Color.White,
-                fontFamily = customFont
-            )
-        }
 
         Text(
             text = "Back to Dashboard",
@@ -112,7 +77,7 @@ fun MessageActivityScreen() {
             color = Color(0xFF2b4a84),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(top = 40.dp)
+                .padding(top = 300.dp)
                 .clickable {
                     val intent = Intent(context, DashboardActivity::class.java)
                     context.startActivity(intent)
@@ -123,8 +88,8 @@ fun MessageActivityScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewMessageActivityScreen() {
+fun PreviewPrescriptionActivityScreen() {
     YourProjectTheme {
-        MessageActivityScreen()
+        PrescriptionActivityScreen()
     }
 }

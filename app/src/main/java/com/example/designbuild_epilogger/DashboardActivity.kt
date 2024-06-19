@@ -64,7 +64,7 @@ fun DashboardActivityScreen() {
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(bottom = 20.dp)
+                .padding(bottom = 80.dp)
         )
 
         Button(
@@ -121,13 +121,31 @@ fun DashboardActivityScreen() {
             )
         }
 
+        Button(
+            onClick = {
+                val intent = Intent(context, PrescriptionActivity::class.java)
+                context.startActivity(intent)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1e3e7e))
+        ) {
+            Text(
+                text = "Prescriptions",
+                fontSize = 29.sp,
+                color = Color.White,
+                fontFamily = customFont
+            )
+        }
+
         Text(
             text = "Log out",
             fontSize = 30.sp,
             color = Color(0xFF2b4a84),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(top = 16.dp)
+                .padding(top = 40.dp)
                 .clickable {
                     val intent = Intent(context, MainActivity::class.java)
                     context.startActivity(intent)
