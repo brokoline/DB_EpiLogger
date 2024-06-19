@@ -48,7 +48,7 @@ class HistoryActivity : ComponentActivity() {
         databaseReference = FirebaseDatabase.getInstance().getReference("users/${auth.currentUser?.uid}/uploads")
         setContent {
             YourProjectTheme {
-                HistoryActivityScreen(auth, databaseReference)
+                HistoryActivityScreen(databaseReference)
             }
         }
     }
@@ -70,7 +70,7 @@ fun formatDateForQuery(date: String): String {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HistoryActivityScreen(auth: FirebaseAuth, databaseReference: DatabaseReference) {
+fun HistoryActivityScreen( databaseReference: DatabaseReference) {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
     var startDate by remember { mutableStateOf(formatLocalDateTime(LocalDateTime.now())) }
