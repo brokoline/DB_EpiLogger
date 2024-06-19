@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,9 +25,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.net.toUri
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -66,9 +65,6 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
     val currentUser = auth.currentUser
     var description by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    //var imageUri by remember { mutableStateOf<Uri?>(null) }
-    /*val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-        imageUri = uri */
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -89,34 +85,56 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(bottom = 50.dp)
+                .padding(bottom = 15.dp)
         )
 
         Text(
-            text = "EpiUpload",
-            fontSize = 39.sp,
+            text = "Upload image",
+            fontSize = 20.sp,
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
             modifier = Modifier
                 .padding(bottom = 20.dp)
         )
 
+        selectedImageUri?.let {
+            Text(
+                text = "Preview",
+                fontSize = 15.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Image(
+                painter = rememberAsyncImagePainter(it),
+                contentDescription = "Selected image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .padding(horizontal = 22.dp)
+                    .background(Color.Gray)
+            )
+        }
+        Text(
+            text ="Describe symptoms or the area of concern",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(horizontal = 22.dp, vertical = 6.dp))
+
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(170.dp)
+                .height(75.dp)
                 .padding(horizontal = 22.dp, vertical = 6.dp),
             textStyle = TextStyle(
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Normal
             ),
-            label = { Text("Describe symptoms or the area of concern, including details such as duration, any changes in condition, and other relevant information.", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
-            maxLines = 20,
+            maxLines = 1,
             singleLine = false
         )
-
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = { imagePickerLauncher.launch("image/*") },
             modifier = Modifier
@@ -126,18 +144,9 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
         ) {
             Text(
                 text = "Choose picture",
-                fontSize = 29.sp,
+                fontSize = 24.sp,
                 color = Color.White,
                 fontFamily = customFont
-            )
-        }
-
-        selectedImageUri?.let {
-            Text(
-                text = "Image selected: $it",
-                fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(vertical = 8.dp)
             )
         }
 
@@ -145,18 +154,18 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
             onClick = {
                 if (selectedImageUri != null) {
                     uploadImage(auth, selectedImageUri!!, description, context)
-                }else {
+                } else {
                     Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 8.dp),
+                .padding(horizontal = 25.dp, vertical = 8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1e3e7e))
         ) {
             Text(
                 text = "Upload picture",
-                fontSize = 29.sp,
+                fontSize = 24.sp,
                 color = Color.White,
                 fontFamily = customFont
             )
@@ -164,7 +173,7 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
 
         Text(
             text = "Back to Dashboard",
-            fontSize = 27.sp,
+            fontSize = 24.sp,
             color = Color(0xFF2b4a84),
             fontFamily = customFont,
             modifier = Modifier
@@ -175,8 +184,8 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
                 }
         )
     }
-
 }
+
 
 private fun uploadImage(auth: FirebaseAuth, selectedImageUri: Uri, description: String, context: android.content.Context) {
     val currentUser = auth.currentUser
