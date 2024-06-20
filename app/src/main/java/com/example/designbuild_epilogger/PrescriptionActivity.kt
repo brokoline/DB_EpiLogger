@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
-import com.example.designbuild_epilogger.R
+
 
 class PrescriptionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

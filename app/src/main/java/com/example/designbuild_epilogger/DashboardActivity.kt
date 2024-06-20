@@ -59,7 +59,7 @@ fun DashboardActivityScreen() {
 
 
         Text(
-            text = "EpiOverview",
+            text = "Overview",
             fontSize = 39.sp,
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
