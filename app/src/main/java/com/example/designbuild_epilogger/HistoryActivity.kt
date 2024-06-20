@@ -1,9 +1,11 @@
 package com.example.designbuild_epilogger
 
 import android.app.DatePickerDialog
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -301,7 +303,7 @@ fun fetchLogs(startDateFormatted: String, endDateFormatted: String, databaseRefe
         }
 
         override fun onCancelled(error: DatabaseError) {
-            // Handle onCancelled
+           Log.e(TAG, "error", error.toException())
         }
     })
 }

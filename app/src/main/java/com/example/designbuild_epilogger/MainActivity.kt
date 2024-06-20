@@ -4,13 +4,11 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -24,9 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
-import com.example.designbuild_epilogger.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -133,8 +129,9 @@ fun MainActivityScreen(auth: FirebaseAuth, onLoginSuccess: () -> Unit) {
                                 if (task.isSuccessful) {
                                     Log.d(ContentValues.TAG, "signInWithEmail:success")
                                     onLoginSuccess()
+
                                 } else {
-                                    Toast.makeText(context, "Incorrect username or password", Toast.LENGTH_SHORT).show()
+                                    loginError = true
                                 }
                             }
                     }
@@ -143,8 +140,7 @@ fun MainActivityScreen(auth: FirebaseAuth, onLoginSuccess: () -> Unit) {
                 }
 
 
-                    val intent = Intent(context, DashboardActivity::class.java)
-                    context.startActivity(intent)
+
 
             },
             modifier = Modifier

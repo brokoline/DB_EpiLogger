@@ -134,7 +134,7 @@ private fun uploadMessage(auth: FirebaseAuth, databaseReference: DatabaseReferen
         val uid = user.uid
         val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
         val currentDate = dateFormat.format(Date())
-        val referenceNumber = (10000000..99999999).random().toString() // Generate random 8-digit number
+        val referenceNumber = (10000000..99999999).random().toString() // generating random reference rumber for now, should be changed later
 
         val messageData = MessageData(
             message,

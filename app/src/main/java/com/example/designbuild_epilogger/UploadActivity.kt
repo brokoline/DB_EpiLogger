@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -36,6 +35,7 @@ import com.google.firebase.storage.StorageReference
 import java.text.SimpleDateFormat
 import java.util.*
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
+import kotlinx.coroutines.launch
 
 class UploadActivity : ComponentActivity() {
     class UploadData(val comment: String = "",
@@ -46,7 +46,7 @@ class UploadActivity : ComponentActivity() {
     }
 
     private lateinit var auth: FirebaseAuth
-    private var firebaseRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("comment")
+    //private var firebaseRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("comment")
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
@@ -62,10 +62,11 @@ class UploadActivity : ComponentActivity() {
 fun UploadActivityScreen(auth: FirebaseAuth) {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
-    val currentUser = auth.currentUser
+    var inProgress by remember { mutableStateOf(false) }
+   // val currentUser = auth.currentUser
     var description by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-
+    val lifecycleScope = rememberCoroutineScope()
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -152,11 +153,19 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
 
         Button(
             onClick = {
-                if (selectedImageUri != null) {
-                    uploadImage(auth, selectedImageUri!!, description, context)
-                } else {
-                    Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
+                if (!inProgress){
+                    inProgress=true
+                    lifecycleScope.launch{
+                        if (selectedImageUri != null) {
+                            uploadImage(auth, selectedImageUri!!, description, context)
+
+                        } else {
+                            Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
                 }
+
             },
             modifier = Modifier
                 .fillMaxWidth()
