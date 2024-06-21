@@ -31,9 +31,7 @@
         <activity
             android:name=".MessageActivity"
             android:exported="true" />
-        <activity
-            android:name=".PrescriptionActivity"
-            android:exported="true" />
+
 
         <activity
             android:name=".MainActivity"
