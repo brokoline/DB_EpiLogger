@@ -71,6 +71,14 @@ fun RegisterActivityScreen(auth: FirebaseAuth) {
             modifier = Modifier
                 .padding(bottom = 50.dp)
         )
+        Text(
+            text = "Group 8",
+            fontSize = 20.sp,
+            color = Color(0xFF1e3e7e),
+            fontFamily = customFont,
+            modifier = Modifier
+                .padding(bottom = 40.dp)
+        )
 
         Text(
             text = "Register New User",
