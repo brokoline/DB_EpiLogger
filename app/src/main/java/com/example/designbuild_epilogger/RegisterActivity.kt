@@ -1,7 +1,10 @@
 package com.example.designbuild_epilogger
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -23,20 +26,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
 import com.example.designbuild_epilogger.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
         setContent {
             YourProjectTheme {
-                RegisterActivityScreen()
+                RegisterActivityScreen(auth)
             }
         }
     }
 }
 
 @Composable
-fun RegisterActivityScreen() {
+fun RegisterActivityScreen(auth: FirebaseAuth) {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
 
@@ -161,7 +170,21 @@ fun RegisterActivityScreen() {
                     isValid = false
                 }
                 if (isValid) {
-                    // Handle register
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d(ContentValues.TAG, "createUserWithEmail:success")
+                                Toast.makeText(
+                                    context,
+                                    "Registration complete, please sign in.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val intent = Intent(context, MainActivity::class.java)
+                                context.startActivity(intent)
+                            } else{
+                               Toast.makeText(context,"invaild email or password", Toast.LENGTH_LONG).show()
+                            }
+                        }
                 }
             },
             modifier = Modifier
@@ -192,10 +215,3 @@ fun RegisterActivityScreen() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewRegisterActivity() {
-    YourProjectTheme {
-        RegisterActivityScreen()
-    }
-}

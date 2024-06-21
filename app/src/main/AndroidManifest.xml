@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.designbuild_epilogger">
@@ -10,27 +11,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DesignBuild_EpiLogger"
         tools:targetApi="31">
-
+        <activity
+            android:name=".PrescriptionActivity"
+            android:exported="false"
+            android:label="@string/title_activity_prescription"
+            android:theme="@style/Theme.DesignBuild_EpiLogger" />
         <activity
             android:name=".RegisterActivity"
             android:exported="true" />
-
         <activity
             android:name=".DashboardActivity"
             android:exported="true" />
-
         <activity
             android:name=".UploadActivity"
             android:exported="true" />
-
         <activity
             android:name=".HistoryActivity"
             android:exported="true" />
-
         <activity
             android:name=".MessageActivity"
             android:exported="true" />
-
         <activity
             android:name=".PrescriptionActivity"
             android:exported="true" />
@@ -40,10 +40,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

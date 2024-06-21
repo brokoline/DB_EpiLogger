@@ -69,7 +69,7 @@ fun PrescriptionActivityScreen() {
             color = Color.Black,
             modifier = Modifier.padding(16.dp),
 
-        )
+            )
 
         Text(
             text = "Back to Dashboard",

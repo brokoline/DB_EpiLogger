@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DesignBuild_EpiLogger</string>
+    <string name="title_activity_prescription">PrescriptionActivity</string>
 </resources>
