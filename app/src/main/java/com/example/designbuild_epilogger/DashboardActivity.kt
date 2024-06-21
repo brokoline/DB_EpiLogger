@@ -82,7 +82,7 @@ fun DashboardActivityScreen() {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp),
+                .padding(horizontal = 32.dp, vertical = 8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1e3e7e))
         ) {
             Text(

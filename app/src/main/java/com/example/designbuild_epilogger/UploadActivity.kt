@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,9 +40,7 @@ class UploadActivity : ComponentActivity() {
     class UploadData(val comment: String = "",
                      val date: String = "",
                      val storagePath: String = "",
-                     val downloadUrl: String = "") {
-
-    }
+                     val downloadUrl: String = "")
 
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +61,10 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
     var inProgress by remember { mutableStateOf(false) }
     var description by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    var showSuccess by remember { mutableStateOf(false) }
+    var successMessage by remember { mutableStateOf("") }
     val lifecycleScope = rememberCoroutineScope()
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -160,18 +161,35 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
         Button(
             onClick = {
                 if (!inProgress){
-                    inProgress=true
-                    lifecycleScope.launch{
+                    inProgress = true
+                    lifecycleScope.launch {
                         if (selectedImageUri != null) {
-                            uploadImage(auth, selectedImageUri!!, description, context)
-
+                            uploadImage(
+                                auth = auth,
+                                selectedImageUri = selectedImageUri!!,
+                                description = description,
+                                context = context,
+                                onError = { message ->
+                                    errorMessage = message
+                                    showError = true
+                                    showSuccess = false
+                                    inProgress = false
+                                },
+                                onSuccess = { message ->
+                                    successMessage = message
+                                    showSuccess = true
+                                    showError = false
+                                    inProgress = false
+                                }
+                            )
                         } else {
-                            Toast.makeText(context, "No image selected", Toast.LENGTH_SHORT).show()
+                            errorMessage = "No image selected"
+                            showError = true
+                            showSuccess = false
+                            inProgress = false
                         }
                     }
-
                 }
-
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -183,6 +201,23 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
                 fontSize = 24.sp,
                 color = Color.White,
                 fontFamily = customFont
+            )
+        }
+
+        if (showError) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
+            )
+        }
+
+        if (showSuccess) {
+            Text(
+                text = successMessage,
+                fontWeight = FontWeight.Bold,
+                color = Color.Green,
+                modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
             )
         }
 
@@ -201,7 +236,14 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
     }
 }
 
-private fun uploadImage(auth: FirebaseAuth, selectedImageUri: Uri, description: String, context: android.content.Context) {
+private fun uploadImage(
+    auth: FirebaseAuth,
+    selectedImageUri: Uri,
+    description: String,
+    context: android.content.Context,
+    onError: (String) -> Unit,
+    onSuccess: (String) -> Unit
+) {
     val currentUser = auth.currentUser
     currentUser?.let { user ->
         val uid = user.uid
@@ -213,40 +255,40 @@ private fun uploadImage(auth: FirebaseAuth, selectedImageUri: Uri, description: 
         val storagePath = "user/$uid/images/$fileName"
         val storageReference: StorageReference = FirebaseStorage.getInstance().getReference(storagePath)
 
-        storageReference.putFile(selectedImageUri)
-            .addOnSuccessListener {
-                storageReference.downloadUrl.addOnSuccessListener { uri ->
-                    val databaseReference = FirebaseDatabase.getInstance().getReference("users/$uid/uploads")
-                    val uploadId = databaseReference.push().key
+        storagePath.let {  // Removed warning
+            storageReference.putFile(selectedImageUri)
+                .addOnSuccessListener {
+                    storageReference.downloadUrl.addOnSuccessListener { uri ->
+                        val databaseReference = FirebaseDatabase.getInstance().getReference("users/$uid/uploads")
+                        val uploadId = databaseReference.push().key
 
-                    val uploadData = UploadActivity.UploadData(
-                        description,
-                        currentDate,
-                        storagePath,
-                        uri.toString()
-                    )
+                        val uploadData = UploadActivity.UploadData(
+                            description,
+                            currentDate,
+                            storagePath,
+                            uri.toString()
+                        )
 
-                    uploadId?.let {
-                        databaseReference.child(it).setValue(uploadData)
-                            .addOnSuccessListener {
-                                Toast.makeText(context, "Image and comment uploaded successfully", Toast.LENGTH_SHORT).show()
-                                val intent = Intent(context, DashboardActivity::class.java)
-                                context.startActivity(intent)
-                            }
-                            .addOnFailureListener { exception ->
-                                Toast.makeText(context, "Failed to upload comment: ${exception.message}", Toast.LENGTH_SHORT).show()
-                                Log.e("UploadError", "Failed to upload comment", exception)
-                            }
-                    } ?: run {
-                        Toast.makeText(context, "Failed to generate database reference", Toast.LENGTH_SHORT).show()
+                        uploadId?.let {
+                            databaseReference.child(it).setValue(uploadData)
+                                .addOnSuccessListener {
+                                    onSuccess("Image and comment uploaded successfully")
+                                }
+                                .addOnFailureListener { exception ->
+                                    onError("Failed to upload comment: ${exception.message}")
+                                    Log.e("UploadError", "Failed to upload comment", exception)
+                                }
+                        } ?: run {
+                            onError("Failed to generate database reference")
+                        }
+                    }.addOnFailureListener { exception ->
+                        onError("Failed to get download URL: ${exception.message}")
+                        Log.e("UploadError", "Failed to get download URL", exception)
                     }
                 }.addOnFailureListener { exception ->
-                    Toast.makeText(context, "Failed to get download URL: ${exception.message}", Toast.LENGTH_SHORT).show()
-                    Log.e("UploadError", "Failed to get download URL", exception)
+                    onError("Image upload failed: ${exception.message}")
+                    Log.e("UploadError", "Image upload failed", exception)
                 }
-            }.addOnFailureListener { exception ->
-                Toast.makeText(context, "Image upload failed: ${exception.message}", Toast.LENGTH_SHORT).show()
-                Log.e("UploadError", "Image upload failed", exception)
-            }
+        }
     }
 }
