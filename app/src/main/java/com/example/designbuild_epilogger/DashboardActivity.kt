@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.Font
@@ -21,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
 import com.example.designbuild_epilogger.R
-import com.google.firebase.auth.FirebaseAuth
 
 class DashboardActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +40,6 @@ class DashboardActivity : ComponentActivity() {
 fun DashboardActivityScreen() {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
-    val auth = FirebaseAuth.getInstance()
 
     Column(
         modifier = Modifier
@@ -53,16 +54,17 @@ fun DashboardActivityScreen() {
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(bottom = 50.dp)
+                .padding(bottom = 20.dp)
         )
 
+
         Text(
-            text = "EpiOverview",
+            text = "Overview",
             fontSize = 39.sp,
             color = Color(0xFF1e3e7e),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(bottom = 20.dp)
+                .padding(bottom = 80.dp)
         )
 
         Button(
@@ -103,7 +105,6 @@ fun DashboardActivityScreen() {
 
         Button(
             onClick = {
-
                 val intent = Intent(context, MessageActivity::class.java)
                 context.startActivity(intent)
             },
@@ -120,17 +121,36 @@ fun DashboardActivityScreen() {
             )
         }
 
-        Text(
+        Button(
+            onClick = {
+                val intent = Intent(context, PrescriptionActivity::class.java)
+                context.startActivity(intent)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1e3e7e))
+        ) {
+            Text(
+                text = "Prescriptions",
+                fontSize = 29.sp,
+                color = Color.White,
+                fontFamily = customFont
+            )
+        }
 
+        Text(
             text = "Log out",
             fontSize = 30.sp,
             color = Color(0xFF2b4a84),
             fontFamily = customFont,
             modifier = Modifier
-                .padding(top = 16.dp)
-                .clickable { auth.signOut()
+                .padding(top = 40.dp)
+                .clickable {
                     val intent = Intent(context, MainActivity::class.java)
-                    context.startActivity(intent)}
+                    context.startActivity(intent)
+                    (context as? ComponentActivity)?.finish()
+                }
         )
     }
 }

@@ -181,6 +181,8 @@ fun RegisterActivityScreen(auth: FirebaseAuth) {
                                 ).show()
                                 val intent = Intent(context, MainActivity::class.java)
                                 context.startActivity(intent)
+                            } else{
+                               Toast.makeText(context,"invaild email or password", Toast.LENGTH_LONG).show()
                             }
                         }
                 }

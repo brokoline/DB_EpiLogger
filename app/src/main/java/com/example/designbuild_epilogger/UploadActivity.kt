@@ -46,7 +46,6 @@ class UploadActivity : ComponentActivity() {
     }
 
     private lateinit var auth: FirebaseAuth
-    //private var firebaseRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("comment")
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
@@ -63,7 +62,6 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
     var inProgress by remember { mutableStateOf(false) }
-   // val currentUser = auth.currentUser
     var description by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val lifecycleScope = rememberCoroutineScope()
@@ -117,9 +115,9 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
         }
         Text(
             text ="Describe symptoms or the area of concern",
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(horizontal = 22.dp, vertical = 6.dp))
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(horizontal = 22.dp, vertical = 6.dp))
 
         OutlinedTextField(
             value = description,
@@ -194,7 +192,6 @@ fun UploadActivityScreen(auth: FirebaseAuth) {
         )
     }
 }
-
 
 private fun uploadImage(auth: FirebaseAuth, selectedImageUri: Uri, description: String, context: android.content.Context) {
     val currentUser = auth.currentUser
