@@ -93,14 +93,14 @@ fun RegisterActivityScreen(auth: FirebaseAuth) {
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             ),
-            label = { Text("Email", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+            label = { Text("E-mail", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
             singleLine = true
         )
         if (emailError) {
             Text(
                 text = "Please enter a valid email",
                 color = Color.Red,
-                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 0.dp)
             )
         }
 
@@ -125,7 +125,7 @@ fun RegisterActivityScreen(auth: FirebaseAuth) {
             Text(
                 text = "Please enter a valid password",
                 color = Color.Red,
-                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 0.dp)
             )
         }
 
@@ -150,7 +150,7 @@ fun RegisterActivityScreen(auth: FirebaseAuth) {
             Text(
                 text = "Passwords do not match",
                 color = Color.Red,
-                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 0.dp)
             )
         }
 
@@ -189,7 +189,7 @@ fun RegisterActivityScreen(auth: FirebaseAuth) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp),
+                .padding(horizontal = 32.dp, vertical = 10.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1e3e7e))
         ) {
             Text(

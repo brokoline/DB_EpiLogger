@@ -76,6 +76,15 @@ fun MessageActivityScreen(auth: FirebaseAuth, databaseReference: DatabaseReferen
                 .padding(bottom = 20.dp)
         )
 
+        Text(
+            text = "The m",
+            fontSize = 20.sp,
+            color = Color(0xFF1e3e7e),
+            fontFamily = customFont,
+            modifier = Modifier
+                .padding(top = 0.dp)
+        )
+
         OutlinedTextField(
             value = message,
             onValueChange = { message = it },
