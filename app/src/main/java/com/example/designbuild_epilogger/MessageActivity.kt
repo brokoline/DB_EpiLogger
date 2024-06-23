@@ -2,7 +2,6 @@ package com.example.designbuild_epilogger
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -20,6 +19,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.designbuild_epilogger.ui.theme.YourProjectTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlinx.coroutines.launch
 
 class MessageActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
@@ -50,6 +51,11 @@ fun MessageActivityScreen(auth: FirebaseAuth, databaseReference: DatabaseReferen
     val customFont = FontFamily(Font(R.font.alfa_slab_one_regular))
     val context = LocalContext.current
     var message by remember { mutableStateOf("") }
+    var showError by remember { mutableStateOf(false) }
+    var showSuccess by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    var successMessage by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -84,15 +90,6 @@ fun MessageActivityScreen(auth: FirebaseAuth, databaseReference: DatabaseReferen
                 .padding(bottom = 20.dp)
         )
 
-        Text(
-            text = "The m",
-            fontSize = 20.sp,
-            color = Color(0xFF1e3e7e),
-            fontFamily = customFont,
-            modifier = Modifier
-                .padding(top = 0.dp)
-        )
-
         OutlinedTextField(
             value = message,
             onValueChange = { message = it },
@@ -104,7 +101,7 @@ fun MessageActivityScreen(auth: FirebaseAuth, databaseReference: DatabaseReferen
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Normal
             ),
-            label = { Text("Write your message here...", fontWeight = FontWeight.Bold, fontSize = 20.sp)  },
+            label = { Text("Write your message here...", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
             maxLines = 6,
             singleLine = false
         )
@@ -112,9 +109,28 @@ fun MessageActivityScreen(auth: FirebaseAuth, databaseReference: DatabaseReferen
         Button(
             onClick = {
                 if (message.isNotEmpty()) {
-                    uploadMessage(auth, databaseReference, message, context)
+                    coroutineScope.launch {
+                        uploadMessage(
+                            auth = auth,
+                            databaseReference = databaseReference,
+                            message = message,
+                            context = context,
+                            onError = { message ->
+                                errorMessage = message
+                                showError = true
+                                showSuccess = false
+                            },
+                            onSuccess = { message ->
+                                successMessage = message
+                                showSuccess = true
+                                showError = false
+                            }
+                        )
+                    }
                 } else {
-                    Toast.makeText(context, "Message cannot be empty", Toast.LENGTH_SHORT).show()
+                    errorMessage = "Message cannot be empty"
+                    showError = true
+                    showSuccess = false
                 }
             },
             modifier = Modifier
@@ -127,6 +143,23 @@ fun MessageActivityScreen(auth: FirebaseAuth, databaseReference: DatabaseReferen
                 fontSize = 29.sp,
                 color = Color.White,
                 fontFamily = customFont
+            )
+        }
+
+        if (showError) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
+            )
+        }
+
+        if (showSuccess) {
+            Text(
+                text = successMessage,
+                fontWeight = FontWeight.Bold,
+                color = Color.Green,
+                modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp)
             )
         }
 
@@ -145,13 +178,20 @@ fun MessageActivityScreen(auth: FirebaseAuth, databaseReference: DatabaseReferen
     }
 }
 
-private fun uploadMessage(auth: FirebaseAuth, databaseReference: DatabaseReference, message: String, context: android.content.Context) {
+private suspend fun uploadMessage(
+    auth: FirebaseAuth,
+    databaseReference: DatabaseReference,
+    message: String,
+    context: android.content.Context,
+    onError: (String) -> Unit,
+    onSuccess: (String) -> Unit
+) {
     val currentUser = auth.currentUser
     currentUser?.let { user ->
         val uid = user.uid
         val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
         val currentDate = dateFormat.format(Date())
-        val referenceNumber = (10000000..99999999).random().toString() // generating random reference rumber for now, should be changed later
+        val referenceNumber = (10000000..99999999).random().toString() // generating random reference number for now, should be changed later
 
         val messageData = MessageData(
             message,
@@ -164,18 +204,16 @@ private fun uploadMessage(auth: FirebaseAuth, databaseReference: DatabaseReferen
         messageId?.let {
             userMessagesRef.child(it).setValue(messageData)
                 .addOnSuccessListener {
-                    Toast.makeText(context, "Message sent successfully", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(context, DashboardActivity::class.java)
-                    context.startActivity(intent)
+                    onSuccess("Message sent successfully")
                 }
                 .addOnFailureListener { exception ->
-                    Toast.makeText(context, "Failed to upload message: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    onError("Failed to upload message: ${exception.message}")
                 }
         } ?: run {
-            Toast.makeText(context, "Failed to generate database reference", Toast.LENGTH_SHORT).show()
+            onError("Failed to generate database reference")
         }
     }
 }
 
-
 data class MessageData(val message: String, val date: String, val referenceNumber: String)
+
